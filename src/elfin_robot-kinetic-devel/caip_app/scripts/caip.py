@@ -44,7 +44,7 @@ import rospy
 import math
 import tf
 import moveit_commander
-from std_msgs.msg import Bool, String
+from std_msgs.msg import Bool, String, Int64
 from std_srvs.srv import SetBool, SetBoolRequest, SetBoolResponse
 from elfin_robot_msgs.srv import SetString, SetStringRequest, SetStringResponse
 from elfin_robot_msgs.srv import SetInt16, SetInt16Request
@@ -52,8 +52,347 @@ import wx
 from sensor_msgs.msg import JointState
 from actionlib import SimpleActionClient
 from control_msgs.msg import FollowJointTrajectoryAction, FollowJointTrajectoryGoal
+from control_msgs.msg import JointTrajectoryControllerState
+from geometry_msgs.msg import PoseStamped, PoseArray, Pose
+from trajectory_msgs.msg import trajectory_msgs
 import threading
 import dynamic_reconfigure.client
+from dynamic_reconfigure.srv import Reconfigure, ReconfigureRequest
+from dynamic_reconfigure.msg import DoubleParameter, Config
+import time
+import sys
+
+def testcaip(num, num2, num3, num4, num5, num6):
+    #print(num)
+    caip = CaipElfin()
+    #print(caip.JointState)
+    caip.listen()
+    print('start')
+    for i in range(0,10):
+        #print('come in function "call_ref_coordinate()"')
+        time.sleep(0.4)
+        #caip.want_end_coordinate()
+        #print(caip.EndCoordinate)
+        caip.want_stop()
+        
+        name=['elfin_joint1', 'elfin_joint2', 'elfin_joint3',
+              'elfin_joint4', 'elfin_joint5', 'elfin_joint6']
+        pos = [i*5 / 180 * math.pi] * 6
+        #print(num)
+        if num == 0:
+            caip.do_joints_goal(name,pos)
+        elif num == 1:
+            caip.do_cart_goal(0.10 + i * 0.05, 0.10 + i * 0.06, 0.7 - 0.06 * i, 0,0,0,1 )
+        elif num == 2:
+            caip.set_cart_path()
+            caip.do_cart_path()
+        elif num == 3:
+            caip.want_joint(num2)
+            caip.want_joint(num3)
+        elif num == 4:
+            caip.want_home()
+        elif num == 5:
+            caip.want_cart(num2)
+        elif num == 6:
+            caip.do_joint_cmd(num2)
+
+    caip.want_stop()
+    print('end')
+    pass
+
+class CaipElfin():
+
+    def __init__(self):
+        # The current status of the joints.
+        self.JointState = JointTrajectoryControllerState()
+
+        # The servo power's status of the robot.
+        self.ServoPowerState = Bool()
+
+        # The fault power's status of the robot.
+        self.PowerFaultState = Bool()
+
+        # The reference coordinate in the calculations of the elfin_basic_api node
+        self.RefCoordinate = String()
+
+        # The end coordinate in the calculations of the elfin_basic_api node
+        self.EndCoordinate = String()
+
+        #The value of the dynamic parameters of elfin_basic_api, e.g. velocity scaling.
+        self.DynamicArgs = Config()
+
+        # get the reference coordinate name of elfin_basic_api from the response of this service.
+        self.call_ref_coordinate = rospy.ServiceProxy('elfin_basic_api/get_reference_link', SetBool)
+        self.call_ref_coordinate_req = SetBoolRequest()
+
+        # get the end coordinate name of elfin_basic_api from the response of this service.
+        self.call_end_coordinate = rospy.ServiceProxy('elfin_basic_api/get_end_link', SetBool)
+        self.call_end_coordinate_req = SetBoolRequest()
+
+        self.JointsPub = rospy.Publisher('elfin_basic_api/joint_goal', JointState, queue_size=1)
+        self.JointsGoal = JointState()
+
+        self.CartGoalPub = rospy.Publisher('elfin_basic_api/cart_goal', PoseStamped, queue_size=1)
+        self.CartPos = PoseStamped()
+
+        self.CartPathPub = rospy.Publisher('elfin_basic_api/cart_path_goal', PoseArray, queue_size=1)
+        self.CartPath = PoseArray()
+        self.CartPath.header.stamp=rospy.get_rostime()
+        self.CartPath.header.frame_id='elfin_base_link'
+
+        self.JointCmdPub = rospy.Publisher('elfin_teleop_joint_cmd_no_limit', Int64 , queue_size=1)
+        self.JointCmd = Int64()
+
+        self.action_client = SimpleActionClient('elfin_module_controller/follow_joint_trajectory',
+                                              FollowJointTrajectoryAction)
+        self.action_goal = FollowJointTrajectoryGoal()
+        #self.goal_list = JointTrajectoryPoint()
+        self.goal_list = []
+
+    
+        self.call_teleop_stop=rospy.ServiceProxy('elfin_basic_api/stop_teleop', SetBool)
+        self.call_teleop_stop_req=SetBoolRequest()
+
+
+        self.call_teleop_joint=rospy.ServiceProxy('elfin_basic_api/joint_teleop',SetInt16)
+        self.call_teleop_joint_req=SetInt16Request()
+
+
+        self.call_teleop_cart=rospy.ServiceProxy('elfin_basic_api/cart_teleop', SetInt16)
+        self.call_teleop_cart_req=SetInt16Request()
+
+ 
+        self.call_move_homing=rospy.ServiceProxy('elfin_basic_api/home_teleop', SetBool)
+        self.call_move_homing_req=SetBoolRequest()
+
+        pass
+
+    def want_joint(self,data):
+        self.call_teleop_joint_req.data = data
+        resp=self.call_teleop_joint.call(self.call_teleop_joint_req)
+        print(resp)
+
+    def want_home(self):
+        print('homehomehome')
+        self.call_move_homing_req.data = True
+        resp=self.call_move_homing.call(self.call_move_homing_req)
+        print(resp)
+
+    def want_cart(self, data):
+        self.call_teleop_cart_req.data =data
+        resp=self.call_teleop_cart.call(self.call_teleop_cart_req)
+        print(resp)
+
+    def want_stop(self):
+        self.call_teleop_stop_req.data=True
+        resp=self.call_teleop_stop.call(self.call_teleop_stop_req)
+        print(resp)
+
+    def set_joint_cmd(self, data=None):
+        if data is not None:
+            self.JointCmd.data = data
+        else:
+            self.JointCmd.data = 0
+
+    def do_joint_cmd(self, data=None):
+        if data is not None:
+            cmd = Int64()
+            cmd.data = data
+            self.JointCmdPub.publish(cmd)
+        else:
+            self.JointCmdPub.publish(self.JointCmd)
+        pass
+
+    def set_cart_path(self):
+        ps=Pose()
+        ps.position.x=0.264
+        ps.position.y=0.125
+        ps.position.z=1.143
+        ps.orientation.x=0
+        ps.orientation.y=0
+        ps.orientation.z=0
+        ps.orientation.w=1
+
+        ps1=Pose()
+        ps1.position.x=0.324
+        ps1.position.y=0.245
+        ps1.position.z=1.143
+        ps1.orientation.x=0
+        ps1.orientation.y=0
+        ps1.orientation.z=0
+        ps1.orientation.w=1
+
+        ps2=Pose()
+        ps2.position.x=0.504
+        ps2.position.y=0.330
+        ps2.position.z=1.143
+        ps2.orientation.x=0
+        ps2.orientation.y=0
+        ps2.orientation.z=0
+        ps2.orientation.w=1
+
+        ps3=Pose()
+        ps3.position.x=0.505
+        ps3.position.y=0.225
+        ps3.position.z=1.143
+        ps3.orientation.x=0
+        ps3.orientation.y=0
+        ps3.orientation.z=0
+        ps3.orientation.w=1
+
+        self.CartPath.poses.append(ps)
+        self.CartPath.poses.append(ps1)
+        self.CartPath.poses.append(ps2)
+        #self.CartPath.poses.append(ps3)
+        #self.CartPath.poses.append(ps1)
+        pass
+
+    def do_cart_path(self,path=None):
+        if path is not None:
+            self.CartPathPub.publish(path)
+        else:
+            self.CartPathPub.publish(self.CartPath)
+
+    def set_cart_pos(self,x,y,z,ox,oy,oz,ow):
+        self.CartPos.header.stamp=rospy.get_rostime()
+        self.CartPos.header.frame_id='elfin_base_link'
+        self.CartPos.pose.position.x=x
+        self.CartPos.pose.position.y=y
+        self.CartPos.pose.position.z=z
+        self.CartPos.pose.orientation.x=ox
+        self.CartPos.pose.orientation.y=oy
+        self.CartPos.pose.orientation.z=oz
+        self.CartPos.pose.orientation.w=ow
+        pass
+
+    def set_action_goal(self, name = None, goal_list = None):
+        if name is not None and goal_list is not None:
+            self.action_goal.trajectory.joint_names = name
+            self.action_goal.trajectory.points = goal_list
+        else:
+            point_goal=JointTrajectoryPoint()
+            point_goal.positions=[0.4, -0.5]
+            point_goal.velocities=[0, 0]
+            point_goal.accelerations=[0, 0]
+            point_goal.time_from_start=rospy.Time(secs=2, nsecs=0)
+            self.action_goal.trajectory.points.append(point_goal)
+
+        self.action_goal.trajectory.header.stamp.secs=0
+        self.action_goal.trajectory.header.stamp.nsecs=0
+        pass
+
+    def do_action_goal(self, action_goal = None):
+        self.action_client.wait_for_server()
+        if action_goal is None:
+            self.action_client.send_goal(self.action_goal)
+            self.action_goal.trajectory.points=[]
+        else:
+            self.action_client.send_goal(self.action_goal)
+
+        pass
+
+    def do_cart_goal(self,x=None, y=None, z=None, ox=None, oy=None, oz=None, ow=None):
+        if x is None or y is None or z is None or ox is None or oy is None or oz is None or ow is None:
+             pass
+        else:
+            self.set_cart_pos(x,y,z,ox,oy,oz,ow)
+        self.CartGoalPub.publish(self.CartPos)
+        pass
+
+    def set_joints_goal(self, name=None, pos=None):
+        if name is None:
+            name=['elfin_joint1', 'elfin_joint2', 'elfin_joint3',
+                 'elfin_joint4', 'elfin_joint5', 'elfin_joint6']
+        if pos is not None:
+            name=['elfin_joint1', 'elfin_joint2', 'elfin_joint3',
+                 'elfin_joint4', 'elfin_joint5', 'elfin_joint6']
+            name = name[:len(pos)]
+        else:
+            pos = [0.4, 0.4, 0.4, 0.4, 0.4, 0.4]
+        self.JointsGoal.name = name
+        self.JointsGoal.position = pos
+        self.JointsGoal.header.stamp=rospy.get_rostime()
+
+    def do_joints_goal(self, name=None, pos=None):
+        if name is not None and pos is not None:
+            self.set_joints_goal(name, pos)
+        elif pos is not None:
+            name=['elfin_joint1', 'elfin_joint2', 'elfin_joint3',
+                 'elfin_joint4', 'elfin_joint5', 'elfin_joint6']
+            name = name[:len(pos)]
+            self.set_joints_goal(name, pos)
+        self.JointsPub.publish(self.JointsGoal)
+
+    def want_end_coordinate(self):
+        self.call_end_coordinate_req.data = True
+        resp = self.call_end_coordinate.call(self.call_end_coordinate_req)
+        if resp.success:
+            self._end_coordinate(resp)
+        #print(resp)
+
+    def want_ref_coordinate(self):
+        self.call_ref_coordinate_req.data = True
+        resp = self.call_ref_coordinate.call(self.call_ref_coordinate_req)
+        if resp.success:
+            self._ref_coordinate(resp)
+        #print(resp)
+
+    def _joints_state(self, data):
+         self.JointState = data
+         #print(self.JointState)
+
+    def get_joints_state(self):
+         return self.JointState
+
+    def _servo_power_state(self, data):
+         self.ServoPowerState = data.data
+         #print(data.data)
+
+    def get_servo_power_state(self):
+         return self.ServoPowerState
+
+    def _power_fault_state(self,data):
+        self.PowerFaultState = data.data
+        #print(self.PowerFaultState)
+
+    def get_power_fault_state(self):
+        return self.PowerFaultState
+
+    def _ref_coordinate(self,data):
+        if hasattr(data, 'message'):
+            self.RefCoordinate = data.message
+        else:
+            self.RefCoordinate = data.data
+        #print(self.RefCoordinate)
+
+    def get_ref_coordinate(self):
+        return self.RefCoordinate
+
+    def _end_coordinate(self,data):
+        if hasattr(data, 'message'):
+            self.EndCoordinate = data.message
+        else:
+            self.EndCoordinate = data.data
+        #print(self.EndCoordinate)
+
+    def get_end_coordinate(self):
+        return self.EndCoordinate
+
+    def _dynamic_args(self,data):
+        self.DynamicArgs = data
+        #print(self.DynamicArgs)
+        
+    def get_dynamic_args(self,data):
+        return self.DynamicArgs
+        
+    def listen(self):
+        rospy.Subscriber('elfin_arm_controller/state', JointTrajectoryControllerState, self._joints_state)
+        rospy.Subscriber('elfin_ros_control/elfin/enable_state', Bool, self._servo_power_state)
+        rospy.Subscriber('elfin_ros_control/elfin/fault_state', Bool, self._power_fault_state)
+        rospy.Subscriber('elfin_basic_api/reference_link_name', String, self._ref_coordinate)
+        rospy.Subscriber('elfin_basic_api/end_link_name', String, self._end_coordinate)
+        rospy.Subscriber('elfin_basic_api/parameter_updates', Config, self._dynamic_args)
+        pass
 
 class MyFrame(wx.Frame):  
   
@@ -626,10 +965,34 @@ class MyFrame(wx.Frame):
   
 if __name__=='__main__':  
     rospy.init_node('elfin_gui')
-    app=wx.App(False)  
-    myframe=MyFrame(parent=None,id=-1)  
-    myframe.Show(True)
 
-    myframe.listen()
 
-    app.MainLoop()
+
+
+    #app=wx.App(False)  
+    #myframe=MyFrame(parent=None,id=-1)  
+    #myframe.Show(True)
+
+    #myframe.listen()
+
+    #app.MainLoop()
+    num = 0
+    num2 = 0
+    num3 = 0
+    num4 = 0
+    num5 = 0
+    num6 = 0
+    if len(sys.argv) >= 2:
+        num = int(sys.argv[1])
+    if len(sys.argv) >= 3:
+        num2 = int(sys.argv[2])
+    if len(sys.argv) >= 4:
+        num2 = int(sys.argv[3])
+    if len(sys.argv) >= 5:
+        num2 = int(sys.argv[4])
+    if len(sys.argv) >= 6:
+        num2 = int(sys.argv[5])
+    if len(sys.argv) >= 7:
+        num2 = int(sys.argv[6])
+    testcaip(num, num2, num3, num4, num5, num6)
+    rospy.spin()

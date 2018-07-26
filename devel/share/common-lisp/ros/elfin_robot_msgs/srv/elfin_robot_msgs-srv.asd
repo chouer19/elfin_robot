@@ -10,6 +10,8 @@
     (:file "_package_ElfinIODWrite" :depends-on ("_package"))
     (:file "SetFloat64" :depends-on ("_package_SetFloat64"))
     (:file "_package_SetFloat64" :depends-on ("_package"))
+    (:file "SetFloat64s" :depends-on ("_package_SetFloat64s"))
+    (:file "_package_SetFloat64s" :depends-on ("_package"))
     (:file "SetInt16" :depends-on ("_package_SetInt16"))
     (:file "_package_SetInt16" :depends-on ("_package"))
     (:file "SetString" :depends-on ("_package_SetString"))

@@ -52,6 +52,8 @@ Created on Mon Nov 13 15:20:10 2017
 #include <trajectory_msgs/JointTrajectoryPoint.h>
 #include <elfin_robot_msgs/SetInt16.h>
 #include <elfin_robot_msgs/SetFloat64.h>
+#include <elfin_robot_msgs/SetFloat64s.h>
+#include <elfin_robot_msgs/JointsFloat64.h>
 #include <std_msgs/Empty.h>
 #include <std_srvs/SetBool.h>
 #include <std_msgs/Int64.h>
@@ -59,6 +61,7 @@ Created on Mon Nov 13 15:20:10 2017
 #include <elfin_basic_api/elfin_basic_api_const.h>
 #include <tf/transform_listener.h>
 #include <tf_conversions/tf_eigen.h>
+#include <sstream>
 
 namespace elfin_basic_api {
 
@@ -66,6 +69,7 @@ class ElfinTeleopAPI
 {
 public:
     ElfinTeleopAPI(moveit::planning_interface::MoveGroupInterface *group, std::string action_name, planning_scene_monitor::PlanningSceneMonitorPtr planning_scene_monitor);
+    void teleopJointCmds(const elfin_robot_msgs::JointsFloat64::ConstPtr&msg);
     void teleopJointCmdNoLimitCB(const std_msgs::Int64ConstPtr &msg);
 
     void teleopJointCmdCB(const std_msgs::Int64ConstPtr &msg);
@@ -76,6 +80,7 @@ public:
     void setRefFrames(std::string ref_link);
     void setEndFrames(std::string end_link);
 
+    bool jointsTeleops(elfin_robot_msgs::SetFloat64s::Request &req, elfin_robot_msgs::SetFloat64s::Response &resp);
     bool jointTeleop_cb(elfin_robot_msgs::SetInt16::Request &req, elfin_robot_msgs::SetInt16::Response &resp);
     bool cartTeleop_cb(elfin_robot_msgs::SetInt16::Request &req, elfin_robot_msgs::SetInt16::Response &resp);
     bool homeTeleop_cb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &resp);
@@ -92,8 +97,10 @@ private:
     actionlib::SimpleActionClient<control_msgs::FollowJointTrajectoryAction> action_client_;
     control_msgs::FollowJointTrajectoryGoal goal_;
     ros::Subscriber sub_teleop_joint_command_no_limit_;
+    ros::Subscriber sub_teleops_joints_commands_no_limit_;
 
     ros::ServiceServer joint_teleop_server_;
+    ros::ServiceServer joints_teleops_server_;
     ros::ServiceServer cart_teleop_server_;
     ros::ServiceServer home_teleop_server_;
     ros::ServiceServer teleop_stop_server_;

@@ -104,8 +104,7 @@ class CmdPub(object):
         ps.header.stamp=rospy.get_rostime()
         ps.header.frame_id='elfin_base_link'
         ps.pose.position.x=0.258
-        ps.pose.position.y=-0.031
-        ps.pose.position.z=0.927
+        ps.pose.position.y=-0.031 ps.pose.position.z=0.927
         ps.pose.orientation.x=0
         ps.pose.orientation.y=0
         ps.pose.orientation.z=0

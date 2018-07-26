@@ -1,8 +1,8 @@
 # generated from genmsg/cmake/pkg-genmsg.cmake.em
 
-message(STATUS "elfin_robot_msgs: 0 messages, 5 services")
+message(STATUS "elfin_robot_msgs: 1 messages, 6 services")
 
-set(MSG_I_FLAGS "-Istd_msgs:/opt/ros/kinetic/share/std_msgs/cmake/../msg")
+set(MSG_I_FLAGS "-Ielfin_robot_msgs:/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/msg;-Istd_msgs:/opt/ros/kinetic/share/std_msgs/cmake/../msg")
 
 # Find all generators
 find_package(gencpp REQUIRED)
@@ -17,11 +17,6 @@ add_custom_target(elfin_robot_msgs_generate_messages ALL)
 
 
 
-get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv" NAME_WE)
-add_custom_target(_elfin_robot_msgs_generate_messages_check_deps_${_filename}
-  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "elfin_robot_msgs" "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv" ""
-)
-
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODRead.srv" NAME_WE)
 add_custom_target(_elfin_robot_msgs_generate_messages_check_deps_${_filename}
   COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "elfin_robot_msgs" "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODRead.srv" ""
@@ -32,9 +27,24 @@ add_custom_target(_elfin_robot_msgs_generate_messages_check_deps_${_filename}
   COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "elfin_robot_msgs" "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetString.srv" ""
 )
 
+get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/msg/JointsFloat64.msg" NAME_WE)
+add_custom_target(_elfin_robot_msgs_generate_messages_check_deps_${_filename}
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "elfin_robot_msgs" "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/msg/JointsFloat64.msg" ""
+)
+
+get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv" NAME_WE)
+add_custom_target(_elfin_robot_msgs_generate_messages_check_deps_${_filename}
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "elfin_robot_msgs" "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv" ""
+)
+
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetInt16.srv" NAME_WE)
 add_custom_target(_elfin_robot_msgs_generate_messages_check_deps_${_filename}
   COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "elfin_robot_msgs" "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetInt16.srv" ""
+)
+
+get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64s.srv" NAME_WE)
+add_custom_target(_elfin_robot_msgs_generate_messages_check_deps_${_filename}
+  COMMAND ${CATKIN_ENV} ${PYTHON_EXECUTABLE} ${GENMSG_CHECK_DEPS_SCRIPT} "elfin_robot_msgs" "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64s.srv" ""
 )
 
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64.srv" NAME_WE)
@@ -48,20 +58,14 @@ add_custom_target(_elfin_robot_msgs_generate_messages_check_deps_${_filename}
 
 ### Section generating for lang: gencpp
 ### Generating Messages
+_generate_msg_cpp(elfin_robot_msgs
+  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/msg/JointsFloat64.msg"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/elfin_robot_msgs
+)
 
 ### Generating Services
-_generate_srv_cpp(elfin_robot_msgs
-  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv"
-  "${MSG_I_FLAGS}"
-  ""
-  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/elfin_robot_msgs
-)
-_generate_srv_cpp(elfin_robot_msgs
-  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64.srv"
-  "${MSG_I_FLAGS}"
-  ""
-  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/elfin_robot_msgs
-)
 _generate_srv_cpp(elfin_robot_msgs
   "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODRead.srv"
   "${MSG_I_FLAGS}"
@@ -75,7 +79,25 @@ _generate_srv_cpp(elfin_robot_msgs
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/elfin_robot_msgs
 )
 _generate_srv_cpp(elfin_robot_msgs
+  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/elfin_robot_msgs
+)
+_generate_srv_cpp(elfin_robot_msgs
   "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetInt16.srv"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/elfin_robot_msgs
+)
+_generate_srv_cpp(elfin_robot_msgs
+  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64s.srv"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/elfin_robot_msgs
+)
+_generate_srv_cpp(elfin_robot_msgs
+  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64.srv"
   "${MSG_I_FLAGS}"
   ""
   ${CATKIN_DEVEL_PREFIX}/${gencpp_INSTALL_DIR}/elfin_robot_msgs
@@ -93,13 +115,17 @@ add_custom_target(elfin_robot_msgs_generate_messages_cpp
 add_dependencies(elfin_robot_msgs_generate_messages elfin_robot_msgs_generate_messages_cpp)
 
 # add dependencies to all check dependencies targets
-get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv" NAME_WE)
-add_dependencies(elfin_robot_msgs_generate_messages_cpp _elfin_robot_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODRead.srv" NAME_WE)
 add_dependencies(elfin_robot_msgs_generate_messages_cpp _elfin_robot_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetString.srv" NAME_WE)
 add_dependencies(elfin_robot_msgs_generate_messages_cpp _elfin_robot_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/msg/JointsFloat64.msg" NAME_WE)
+add_dependencies(elfin_robot_msgs_generate_messages_cpp _elfin_robot_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv" NAME_WE)
+add_dependencies(elfin_robot_msgs_generate_messages_cpp _elfin_robot_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetInt16.srv" NAME_WE)
+add_dependencies(elfin_robot_msgs_generate_messages_cpp _elfin_robot_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64s.srv" NAME_WE)
 add_dependencies(elfin_robot_msgs_generate_messages_cpp _elfin_robot_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64.srv" NAME_WE)
 add_dependencies(elfin_robot_msgs_generate_messages_cpp _elfin_robot_msgs_generate_messages_check_deps_${_filename})
@@ -113,20 +139,14 @@ list(APPEND ${PROJECT_NAME}_EXPORTED_TARGETS elfin_robot_msgs_generate_messages_
 
 ### Section generating for lang: geneus
 ### Generating Messages
+_generate_msg_eus(elfin_robot_msgs
+  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/msg/JointsFloat64.msg"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/elfin_robot_msgs
+)
 
 ### Generating Services
-_generate_srv_eus(elfin_robot_msgs
-  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv"
-  "${MSG_I_FLAGS}"
-  ""
-  ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/elfin_robot_msgs
-)
-_generate_srv_eus(elfin_robot_msgs
-  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64.srv"
-  "${MSG_I_FLAGS}"
-  ""
-  ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/elfin_robot_msgs
-)
 _generate_srv_eus(elfin_robot_msgs
   "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODRead.srv"
   "${MSG_I_FLAGS}"
@@ -140,7 +160,25 @@ _generate_srv_eus(elfin_robot_msgs
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/elfin_robot_msgs
 )
 _generate_srv_eus(elfin_robot_msgs
+  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/elfin_robot_msgs
+)
+_generate_srv_eus(elfin_robot_msgs
   "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetInt16.srv"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/elfin_robot_msgs
+)
+_generate_srv_eus(elfin_robot_msgs
+  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64s.srv"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/elfin_robot_msgs
+)
+_generate_srv_eus(elfin_robot_msgs
+  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64.srv"
   "${MSG_I_FLAGS}"
   ""
   ${CATKIN_DEVEL_PREFIX}/${geneus_INSTALL_DIR}/elfin_robot_msgs
@@ -158,13 +196,17 @@ add_custom_target(elfin_robot_msgs_generate_messages_eus
 add_dependencies(elfin_robot_msgs_generate_messages elfin_robot_msgs_generate_messages_eus)
 
 # add dependencies to all check dependencies targets
-get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv" NAME_WE)
-add_dependencies(elfin_robot_msgs_generate_messages_eus _elfin_robot_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODRead.srv" NAME_WE)
 add_dependencies(elfin_robot_msgs_generate_messages_eus _elfin_robot_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetString.srv" NAME_WE)
 add_dependencies(elfin_robot_msgs_generate_messages_eus _elfin_robot_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/msg/JointsFloat64.msg" NAME_WE)
+add_dependencies(elfin_robot_msgs_generate_messages_eus _elfin_robot_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv" NAME_WE)
+add_dependencies(elfin_robot_msgs_generate_messages_eus _elfin_robot_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetInt16.srv" NAME_WE)
+add_dependencies(elfin_robot_msgs_generate_messages_eus _elfin_robot_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64s.srv" NAME_WE)
 add_dependencies(elfin_robot_msgs_generate_messages_eus _elfin_robot_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64.srv" NAME_WE)
 add_dependencies(elfin_robot_msgs_generate_messages_eus _elfin_robot_msgs_generate_messages_check_deps_${_filename})
@@ -178,20 +220,14 @@ list(APPEND ${PROJECT_NAME}_EXPORTED_TARGETS elfin_robot_msgs_generate_messages_
 
 ### Section generating for lang: genlisp
 ### Generating Messages
+_generate_msg_lisp(elfin_robot_msgs
+  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/msg/JointsFloat64.msg"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/elfin_robot_msgs
+)
 
 ### Generating Services
-_generate_srv_lisp(elfin_robot_msgs
-  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv"
-  "${MSG_I_FLAGS}"
-  ""
-  ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/elfin_robot_msgs
-)
-_generate_srv_lisp(elfin_robot_msgs
-  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64.srv"
-  "${MSG_I_FLAGS}"
-  ""
-  ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/elfin_robot_msgs
-)
 _generate_srv_lisp(elfin_robot_msgs
   "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODRead.srv"
   "${MSG_I_FLAGS}"
@@ -205,7 +241,25 @@ _generate_srv_lisp(elfin_robot_msgs
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/elfin_robot_msgs
 )
 _generate_srv_lisp(elfin_robot_msgs
+  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/elfin_robot_msgs
+)
+_generate_srv_lisp(elfin_robot_msgs
   "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetInt16.srv"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/elfin_robot_msgs
+)
+_generate_srv_lisp(elfin_robot_msgs
+  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64s.srv"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/elfin_robot_msgs
+)
+_generate_srv_lisp(elfin_robot_msgs
+  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64.srv"
   "${MSG_I_FLAGS}"
   ""
   ${CATKIN_DEVEL_PREFIX}/${genlisp_INSTALL_DIR}/elfin_robot_msgs
@@ -223,13 +277,17 @@ add_custom_target(elfin_robot_msgs_generate_messages_lisp
 add_dependencies(elfin_robot_msgs_generate_messages elfin_robot_msgs_generate_messages_lisp)
 
 # add dependencies to all check dependencies targets
-get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv" NAME_WE)
-add_dependencies(elfin_robot_msgs_generate_messages_lisp _elfin_robot_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODRead.srv" NAME_WE)
 add_dependencies(elfin_robot_msgs_generate_messages_lisp _elfin_robot_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetString.srv" NAME_WE)
 add_dependencies(elfin_robot_msgs_generate_messages_lisp _elfin_robot_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/msg/JointsFloat64.msg" NAME_WE)
+add_dependencies(elfin_robot_msgs_generate_messages_lisp _elfin_robot_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv" NAME_WE)
+add_dependencies(elfin_robot_msgs_generate_messages_lisp _elfin_robot_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetInt16.srv" NAME_WE)
+add_dependencies(elfin_robot_msgs_generate_messages_lisp _elfin_robot_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64s.srv" NAME_WE)
 add_dependencies(elfin_robot_msgs_generate_messages_lisp _elfin_robot_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64.srv" NAME_WE)
 add_dependencies(elfin_robot_msgs_generate_messages_lisp _elfin_robot_msgs_generate_messages_check_deps_${_filename})
@@ -243,20 +301,14 @@ list(APPEND ${PROJECT_NAME}_EXPORTED_TARGETS elfin_robot_msgs_generate_messages_
 
 ### Section generating for lang: gennodejs
 ### Generating Messages
+_generate_msg_nodejs(elfin_robot_msgs
+  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/msg/JointsFloat64.msg"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/elfin_robot_msgs
+)
 
 ### Generating Services
-_generate_srv_nodejs(elfin_robot_msgs
-  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv"
-  "${MSG_I_FLAGS}"
-  ""
-  ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/elfin_robot_msgs
-)
-_generate_srv_nodejs(elfin_robot_msgs
-  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64.srv"
-  "${MSG_I_FLAGS}"
-  ""
-  ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/elfin_robot_msgs
-)
 _generate_srv_nodejs(elfin_robot_msgs
   "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODRead.srv"
   "${MSG_I_FLAGS}"
@@ -270,7 +322,25 @@ _generate_srv_nodejs(elfin_robot_msgs
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/elfin_robot_msgs
 )
 _generate_srv_nodejs(elfin_robot_msgs
+  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/elfin_robot_msgs
+)
+_generate_srv_nodejs(elfin_robot_msgs
   "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetInt16.srv"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/elfin_robot_msgs
+)
+_generate_srv_nodejs(elfin_robot_msgs
+  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64s.srv"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/elfin_robot_msgs
+)
+_generate_srv_nodejs(elfin_robot_msgs
+  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64.srv"
   "${MSG_I_FLAGS}"
   ""
   ${CATKIN_DEVEL_PREFIX}/${gennodejs_INSTALL_DIR}/elfin_robot_msgs
@@ -288,13 +358,17 @@ add_custom_target(elfin_robot_msgs_generate_messages_nodejs
 add_dependencies(elfin_robot_msgs_generate_messages elfin_robot_msgs_generate_messages_nodejs)
 
 # add dependencies to all check dependencies targets
-get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv" NAME_WE)
-add_dependencies(elfin_robot_msgs_generate_messages_nodejs _elfin_robot_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODRead.srv" NAME_WE)
 add_dependencies(elfin_robot_msgs_generate_messages_nodejs _elfin_robot_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetString.srv" NAME_WE)
 add_dependencies(elfin_robot_msgs_generate_messages_nodejs _elfin_robot_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/msg/JointsFloat64.msg" NAME_WE)
+add_dependencies(elfin_robot_msgs_generate_messages_nodejs _elfin_robot_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv" NAME_WE)
+add_dependencies(elfin_robot_msgs_generate_messages_nodejs _elfin_robot_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetInt16.srv" NAME_WE)
+add_dependencies(elfin_robot_msgs_generate_messages_nodejs _elfin_robot_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64s.srv" NAME_WE)
 add_dependencies(elfin_robot_msgs_generate_messages_nodejs _elfin_robot_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64.srv" NAME_WE)
 add_dependencies(elfin_robot_msgs_generate_messages_nodejs _elfin_robot_msgs_generate_messages_check_deps_${_filename})
@@ -308,20 +382,14 @@ list(APPEND ${PROJECT_NAME}_EXPORTED_TARGETS elfin_robot_msgs_generate_messages_
 
 ### Section generating for lang: genpy
 ### Generating Messages
+_generate_msg_py(elfin_robot_msgs
+  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/msg/JointsFloat64.msg"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/elfin_robot_msgs
+)
 
 ### Generating Services
-_generate_srv_py(elfin_robot_msgs
-  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv"
-  "${MSG_I_FLAGS}"
-  ""
-  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/elfin_robot_msgs
-)
-_generate_srv_py(elfin_robot_msgs
-  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64.srv"
-  "${MSG_I_FLAGS}"
-  ""
-  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/elfin_robot_msgs
-)
 _generate_srv_py(elfin_robot_msgs
   "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODRead.srv"
   "${MSG_I_FLAGS}"
@@ -335,7 +403,25 @@ _generate_srv_py(elfin_robot_msgs
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/elfin_robot_msgs
 )
 _generate_srv_py(elfin_robot_msgs
+  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/elfin_robot_msgs
+)
+_generate_srv_py(elfin_robot_msgs
   "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetInt16.srv"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/elfin_robot_msgs
+)
+_generate_srv_py(elfin_robot_msgs
+  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64s.srv"
+  "${MSG_I_FLAGS}"
+  ""
+  ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/elfin_robot_msgs
+)
+_generate_srv_py(elfin_robot_msgs
+  "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64.srv"
   "${MSG_I_FLAGS}"
   ""
   ${CATKIN_DEVEL_PREFIX}/${genpy_INSTALL_DIR}/elfin_robot_msgs
@@ -353,13 +439,17 @@ add_custom_target(elfin_robot_msgs_generate_messages_py
 add_dependencies(elfin_robot_msgs_generate_messages elfin_robot_msgs_generate_messages_py)
 
 # add dependencies to all check dependencies targets
-get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv" NAME_WE)
-add_dependencies(elfin_robot_msgs_generate_messages_py _elfin_robot_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODRead.srv" NAME_WE)
 add_dependencies(elfin_robot_msgs_generate_messages_py _elfin_robot_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetString.srv" NAME_WE)
 add_dependencies(elfin_robot_msgs_generate_messages_py _elfin_robot_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/msg/JointsFloat64.msg" NAME_WE)
+add_dependencies(elfin_robot_msgs_generate_messages_py _elfin_robot_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv" NAME_WE)
+add_dependencies(elfin_robot_msgs_generate_messages_py _elfin_robot_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetInt16.srv" NAME_WE)
+add_dependencies(elfin_robot_msgs_generate_messages_py _elfin_robot_msgs_generate_messages_check_deps_${_filename})
+get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64s.srv" NAME_WE)
 add_dependencies(elfin_robot_msgs_generate_messages_py _elfin_robot_msgs_generate_messages_check_deps_${_filename})
 get_filename_component(_filename "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64.srv" NAME_WE)
 add_dependencies(elfin_robot_msgs_generate_messages_py _elfin_robot_msgs_generate_messages_check_deps_${_filename})

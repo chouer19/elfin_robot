@@ -33,10 +33,15 @@ if(NOT DEFINED CMAKE_INSTALL_SO_NO_EXE)
 endif()
 
 if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/elfin_robot_msgs/msg" TYPE FILE FILES "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/msg/JointsFloat64.msg")
+endif()
+
+if(NOT CMAKE_INSTALL_COMPONENT OR "${CMAKE_INSTALL_COMPONENT}" STREQUAL "Unspecified")
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/elfin_robot_msgs/srv" TYPE FILE FILES
     "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetString.srv"
     "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetInt16.srv"
     "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64.srv"
+    "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/SetFloat64s.srv"
     "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODRead.srv"
     "/home/chouer/workspace/rospace/elfin/src/elfin_robot-kinetic-devel/elfin_robot_msgs/srv/ElfinIODWrite.srv"
     )

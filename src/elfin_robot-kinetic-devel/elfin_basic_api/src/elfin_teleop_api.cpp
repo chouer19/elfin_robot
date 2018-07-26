@@ -47,7 +47,9 @@ ElfinTeleopAPI::ElfinTeleopAPI(moveit::planning_interface::MoveGroupInterface *g
     goal_.trajectory.header.stamp.sec=0;
     goal_.trajectory.header.stamp.nsec=0;
     sub_teleop_joint_command_no_limit_=root_nh_.subscribe("elfin_teleop_joint_cmd_no_limit", 1,  &ElfinTeleopAPI::teleopJointCmdNoLimitCB, this);
+    sub_teleops_joints_commands_no_limit_=root_nh_.subscribe("changyuan_joints_cmd", 1,  &ElfinTeleopAPI::teleopJointCmds, this);
 
+    joints_teleops_server_=teleop_nh_.advertiseService("joints_teleops", &ElfinTeleopAPI::jointsTeleops, this);
     joint_teleop_server_=teleop_nh_.advertiseService("joint_teleop", &ElfinTeleopAPI::jointTeleop_cb, this);
     cart_teleop_server_=teleop_nh_.advertiseService("cart_teleop", &ElfinTeleopAPI::cartTeleop_cb, this);
     home_teleop_server_=teleop_nh_.advertiseService("home_teleop", &ElfinTeleopAPI::homeTeleop_cb, this);
@@ -65,8 +67,7 @@ ElfinTeleopAPI::ElfinTeleopAPI(moveit::planning_interface::MoveGroupInterface *g
     resolution_linear_=0.005;
 
     end_link_=group_->getEndEffectorLink();
-    reference_link_=group_->getPlanningFrame();
-
+    reference_link_=group_->getPlanningFrame(); 
     default_tip_link_=group_->getEndEffectorLink();
     root_link_=group_->getPlanningFrame();
 }
@@ -89,6 +90,50 @@ void ElfinTeleopAPI::setEndFrames(std::string end_link)
     end_link_=end_link;
 }
 
+// Function: teleopJointCmds
+// Author: XueChong
+// Belong: Constant Source Technology TianJin Campany
+// Data: 2018.07.26
+// Description: 
+//             Extension of teleopJOintCmdNoLimitCB which can only do on joint cmd on time
+//             this function supports multiple joint-operation one time
+void ElfinTeleopAPI::teleopJointCmds(const elfin_robot_msgs::JointsFloat64::ConstPtr&msg)
+{
+    if(msg->data.size() == 0 || msg->data.size() > 6){
+        return ;
+    }
+    std::vector<double> joints_value;
+    std::vector<int> joints_direction;
+    double biggest_scale = 0;
+    for(int i=0; i<msg->data.size(); i++){
+        joints_value.push_back(fabs(msg->data[i]));
+        if(joints_value[i] > biggest_scale){
+            biggest_scale = joints_value[i];
+        }
+        joints_direction.push_back(-1);
+        if(joints_value[i] == msg->data[i]){
+            joints_direction[i]=1;
+        }
+    }
+
+    if(biggest_scale == 0){
+        return ;
+    }
+
+    trajectory_msgs::JointTrajectoryPoint point_tmp;
+    std::vector<double> position_tmp=group_->getCurrentJointValues();
+    for(int i=0; i<joints_value.size(); i++){
+        joints_value[i] /= biggest_scale;
+        position_tmp[i]+=joints_direction[i]*joint_step_*joints_value[i];
+    }
+
+    point_tmp.positions=position_tmp;
+    point_tmp.time_from_start.nsec=joint_duration_ns_;
+    goal_.trajectory.points.push_back(point_tmp);
+    action_client_.sendGoal(goal_);
+    goal_.trajectory.points.clear();
+}
+
 void ElfinTeleopAPI::teleopJointCmdNoLimitCB(const std_msgs::Int64ConstPtr &msg)
 {
     if(msg->data==0 || abs(msg->data)>goal_.trajectory.joint_names.size())
@@ -108,6 +153,147 @@ void ElfinTeleopAPI::teleopJointCmdNoLimitCB(const std_msgs::Int64ConstPtr &msg)
     action_client_.sendGoal(goal_);
     goal_.trajectory.points.clear();
 }
+
+
+// Function: jointsTeleops
+// Author: XueChong
+// Belong: Constant Source Technology TianJin Campany
+// Data: 2018.07.26
+// Description: 
+//             Extension of jointTeleop_cb which can only do on joint cmd on time
+//             this function supports multiple joint-operation one time
+bool ElfinTeleopAPI::jointsTeleops(elfin_robot_msgs::SetFloat64s::Request &req, elfin_robot_msgs::SetFloat64s::Response &resp)
+{
+    // check if the array of cmd
+    if(req.data.size() == 0 || req.data.size() > 6)
+    {
+        resp.success=false;
+        resp.message="wrong joint teleop data";
+        return true;
+    }
+    std::vector<double> joints_value;
+    std::vector<std::string> joints_direction;
+    std::vector<int> joints_sign;
+    double biggest_scale = 0;
+    for(int i=0; i<req.data.size(); i++){
+        joints_value.push_back(req.data[i]);
+        if(fabs(joints_value[i]) > biggest_scale){
+            biggest_scale = abs(joints_value[i]);
+        }
+        joints_direction.push_back("-");
+        joints_sign.push_back(-1);
+        if(joints_value[i] == abs(req.data[i])){
+            joints_direction[i]="+";
+            joints_sign[i] = 1;
+        }
+    }
+
+    if(biggest_scale == 0){
+        resp.success=false;
+        resp.message="wrong joint teleop data";
+        return false;
+    }
+
+    // get current joint positions in rads
+    std::vector<double> position_current=group_->getCurrentJointValues();
+    std::vector<double> position_goal=position_current;
+    std::vector<double> joint_current_position=position_current;
+
+    // get every upper or lower limit of joints
+    for(int i =0; i< joints_value.size(); i++){
+        if(joints_value[i]>0){
+            position_goal[i]=group_->getRobotModel()->getURDF()->getJoint(goal_.trajectory.joint_names[i])->limits->upper;
+            joints_sign[i]=1;
+        }else if(joints_value[i]<0){
+            position_goal[i]=group_->getRobotModel()->getURDF()->getJoint(goal_.trajectory.joint_names[i])->limits->lower;
+            joints_sign[i]=-1;
+            joints_value[i] = -1 * joints_value[i];
+        }
+    }
+
+    // check if all joints could move any
+    double duration_from_speed = 0;
+    for(int i =0; i< joints_value.size(); i++){
+        double duration_speed=fabs(position_goal[i]-joint_current_position[i])/joint_speed_;
+        if(duration_speed<=0.1)
+        {
+            resp.success=false;
+            std::stringstream stream;
+            std::string result="robot can't move in ";
+            stream << "joint" << i<<" can't move in " << joints_direction[i] << " direction any more";
+            resp.message=result;
+            resp.message=stream.str();
+            return true;
+        }
+        if(duration_from_speed < duration_speed){
+            duration_from_speed = duration_speed;
+        }
+    }
+
+    // 
+    trajectory_msgs::JointTrajectoryPoint point_tmp;
+
+    robot_state::RobotStatePtr kinematic_state_ptr=group_->getCurrentState();
+    robot_state::RobotState kinematic_state=*kinematic_state_ptr;
+    const robot_state::JointModelGroup* joint_model_group = kinematic_state.getJointModelGroup(group_->getName());
+
+    planning_scene_monitor_->updateFrameTransforms();
+    planning_scene::PlanningSceneConstPtr plan_scene=planning_scene_monitor_->getPlanningScene();
+
+    std::vector<double> position_tmp=position_current;
+    bool collision_flag=false;
+
+    int loop_num = 1;
+    double duration_from_start = duration_from_speed;
+    while(duration_from_speed>0.1){
+        for(int i=0; i< joints_value.size(); i++){
+            position_tmp[i]+=joint_speed_*0.1*joints_sign[i]*joints_value[i]/biggest_scale;
+            double temp_duration_from_speed = 0;
+            temp_duration_from_speed = fabs(position_goal[i]-position_tmp[i])/joint_speed_;
+            if(duration_from_speed>temp_duration_from_speed){
+                duration_from_speed =  temp_duration_from_speed;
+            }
+        }
+        kinematic_state.setJointGroupPositions(joint_model_group, position_tmp);
+        if(plan_scene->isStateColliding(kinematic_state, group_->getName()))
+        {
+            if(loop_num==1)
+            {
+                resp.success=false;
+                std::string result="robot can't move any more";
+                resp.message=result;
+                return true;
+            }
+            collision_flag=true;
+            break;
+        }
+        point_tmp.time_from_start=ros::Duration(0.1*loop_num);
+        point_tmp.positions=position_tmp;
+        goal_.trajectory.points.push_back(point_tmp);
+        loop_num++;
+    }
+
+    if(!collision_flag)
+    {
+        kinematic_state.setJointGroupPositions(joint_model_group, position_goal);
+        if(!plan_scene->isStateColliding(kinematic_state, group_->getName()))
+        {
+            point_tmp.positions=position_goal;
+            ros::Duration dur(duration_from_start);
+            point_tmp.time_from_start=dur;
+            goal_.trajectory.points.push_back(point_tmp);
+        }
+    }
+
+    action_client_.sendGoal(goal_);
+    goal_.trajectory.points.clear();
+
+    resp.success=true;
+    std::string result="robot is moving";
+    resp.message=result;
+    return true;
+}
+
 
 bool ElfinTeleopAPI::jointTeleop_cb(elfin_robot_msgs::SetInt16::Request &req, elfin_robot_msgs::SetInt16::Response &resp)
 {
