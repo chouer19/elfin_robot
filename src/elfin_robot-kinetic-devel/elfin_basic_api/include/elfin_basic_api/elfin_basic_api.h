@@ -64,6 +64,7 @@ public:
 
     bool setRefLink_cb(elfin_robot_msgs::SetString::Request &req, elfin_robot_msgs::SetString::Response &resp);
     bool setEndLink_cb(elfin_robot_msgs::SetString::Request &req, elfin_robot_msgs::SetString::Response &resp);
+    bool setVelocityScale_cb(elfin_robot_msgs::SetFloat64::Request &req, elfin_robot_msgs::SetFloat64::Response &resp);
 
 private:
     moveit::planning_interface::MoveGroupInterface *group_;
@@ -83,6 +84,8 @@ private:
 
     ros::ServiceServer set_ref_link_server_;
     ros::ServiceServer set_end_link_server_;
+
+    ros::ServiceServer set_velocity_scale_;
 
     std_msgs::String ref_link_name_msg_;
     std_msgs::String end_link_name_msg_;

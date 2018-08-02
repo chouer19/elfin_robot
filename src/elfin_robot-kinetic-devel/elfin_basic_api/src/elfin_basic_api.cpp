@@ -47,10 +47,11 @@ ElfinBasicAPI::ElfinBasicAPI(moveit::planning_interface::MoveGroupInterface *gro
     teleop_api_=new ElfinTeleopAPI(group, action_name, planning_scene_monitor);
     motion_api_=new ElfinMotionAPI(group, action_name, planning_scene_monitor);
 
-    dynamic_reconfigure_server_.setCallback(boost::bind(&ElfinBasicAPI::dynamicReconfigureCallback, this, _1, _2));
+    //dynamic_reconfigure_server_.setCallback(boost::bind(&ElfinBasicAPI::dynamicReconfigureCallback, this, _1, _2));
 
     set_ref_link_server_=local_nh_.advertiseService("set_reference_link", &ElfinBasicAPI::setRefLink_cb, this);
     set_end_link_server_=local_nh_.advertiseService("set_end_link", &ElfinBasicAPI::setEndLink_cb, this);
+    set_velocity_scale_=local_nh_.advertiseService("set_velocity_scale", &ElfinBasicAPI::setVelocityScale_cb, this);
 
     ref_link_name_publisher_=local_nh_.advertise<std_msgs::String>("reference_link_name", 1, true);
     end_link_name_publisher_=local_nh_.advertise<std_msgs::String>("end_link_name", 1, true);
@@ -60,6 +61,29 @@ ElfinBasicAPI::ElfinBasicAPI(moveit::planning_interface::MoveGroupInterface *gro
 
     ref_link_name_publisher_.publish(ref_link_name_msg_);
     end_link_name_publisher_.publish(end_link_name_msg_);
+}
+
+// Function: setVelocityScale_cb
+// Author: XueChong
+// Belong: Constant Source Technology TianJin Campany
+// Data: 2018.08.01
+// Description: 
+//             add a service for the client to set velocity scale
+
+bool ElfinBasicAPI::setVelocityScale_cb(elfin_robot_msgs::SetFloat64::Request &req, elfin_robot_msgs::SetFloat64::Response &resp){
+    double scale = req.data;
+    if(scale <0 || scale > 1){
+        resp.success=false;
+        resp.message="the scale is not in right range";
+        return false;
+    }
+    velocity_scaling_ = scale;
+    teleop_api_->setVelocityScaling(velocity_scaling_);
+
+    resp.success=true;
+    resp.message="new velocity has been set successfully";
+    return true;
+
 }
 
 ElfinBasicAPI::~ElfinBasicAPI()
